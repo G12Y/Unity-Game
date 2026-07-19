@@ -10,10 +10,11 @@ public class PlayerInteract : MonoBehaviour
     public ItemUI itemUI;
 
     private Ingredient currentIngredient;
+    private FoodInfo currentFood;
 
     void Update()
     {
-        DetectIngredient();
+        DetectObject();
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -21,21 +22,37 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
-    void DetectIngredient()
+    void DetectObject()
     {
         currentIngredient = null;
+        currentFood = null;
 
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactDistance))
         {
+            //=====================
+            // Nguyên liệu
+            //=====================
             Ingredient ingredient = hit.collider.GetComponent<Ingredient>();
 
             if (ingredient != null)
             {
                 currentIngredient = ingredient;
                 itemUI.Show(ingredient);
+                return;
+            }
+
+            //=====================
+            // Món ăn
+            //=====================
+            FoodInfo food = hit.collider.GetComponent<FoodInfo>();
+
+            if (food != null)
+            {
+                currentFood = food;
+                itemUI.ShowFood(food);
                 return;
             }
         }
@@ -51,9 +68,9 @@ public class PlayerInteract : MonoBehaviour
         if (!Physics.Raycast(ray, out hit, interactDistance))
             return;
 
-        // ======================
+        //=====================
         // Nhặt nguyên liệu
-        // ======================
+        //=====================
         Ingredient ingredient = hit.collider.GetComponent<Ingredient>();
 
         if (ingredient != null)
@@ -68,14 +85,32 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        // ======================
-        // Đặt lên bàn
-        // ======================
+        //=====================
+        // Nhặt món ăn
+        //=====================
+        FoodInfo food = hit.collider.GetComponent<FoodInfo>();
+
+        if (food != null)
+        {
+            if (!playerHand.IsHolding())
+            {
+                playerHand.Hold(food);
+                Debug.Log("Đang nhặt: " + food.gameObject.name);
+                Destroy(food.gameObject);
+                itemUI.Hide();
+            }
+
+            return;
+        }
+
+        //=====================
+        // Đặt nguyên liệu lên bàn
+        //=====================
         CookingTable table = hit.collider.GetComponent<CookingTable>();
 
         if (table != null)
         {
-            if (playerHand.IsHolding())
+            if (playerHand.IsHoldingIngredient())
             {
                 Ingredient held = playerHand.GetHeldIngredient();
 

@@ -10,7 +10,9 @@ public class ItemUI : MonoBehaviour
     public TMP_Text amountText;
     public TMP_Text pressEText;
 
+    //========================================
     // Hiện thông tin nguyên liệu
+    //========================================
     public void Show(Ingredient ingredient)
     {
         panel.SetActive(true);
@@ -20,13 +22,29 @@ public class ItemUI : MonoBehaviour
         pressEText.text = "Nhấn E để nhặt";
     }
 
+    //========================================
+    // Hiện thông tin món ăn
+    //========================================
+    public void ShowFood(FoodInfo food)
+    {
+        panel.SetActive(true);
+
+        itemNameText.text = "Tên: " + food.recipe.recipeName;
+        amountText.text = "";
+        pressEText.text = "Nhấn E để nhặt";
+    }
+
+    //========================================
     // Ẩn UI
+    //========================================
     public void Hide()
     {
         panel.SetActive(false);
     }
 
-    // Cập nhật số lượng sau khi nhặt
+    //========================================
+    // Cập nhật số lượng nguyên liệu
+    //========================================
     public void Refresh(Ingredient ingredient)
     {
         amountText.text = "Số lượng: " + ingredient.amount;
