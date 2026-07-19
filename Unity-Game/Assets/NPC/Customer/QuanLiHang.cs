@@ -24,7 +24,15 @@ public class QueueManager : MonoBehaviour
         // Bắt đầu quá trình gọi khách từ từ
         StartCoroutine(SpawnRoutine());
     }
-
+    public void ServeCustomerByObject(GameObject customerObj)
+    {
+        if (customersInLine.Contains(customerObj))
+        {
+            customersInLine.Remove(customerObj);
+            Destroy(customerObj, 0.1f); // Xóa khách sau khi trả tiền
+            UpdateQueuePositions();
+        }
+    }
     // Coroutine quản lý việc hồi khách
     IEnumerator SpawnRoutine()
     {
@@ -95,11 +103,11 @@ public class QueueManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ServeCustomer();
-        }
-    }
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         ServeCustomer();
+    //     }
+    // }
 }
